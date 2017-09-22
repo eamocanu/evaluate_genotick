@@ -41,13 +41,13 @@ You need a predictions_x.csv and the original data/ directory.
 
 Suggested use, first time (to generate market readings):
 
-    genometrics "./predict" "./truth" --data "./data" 
+    main.py "./predict" "./truth" --data "./data" 
         --predictions "predictions_x.csv" --start 20170101 
         --skipreverse --outputfiles
 
 Suggested use, with already-generated market readings:
 
-    genometrics "./predict" "./truth" --start 20170101 
+    main.py "./predict" "./truth" --start 20170101 
         --skipreverse --outputfiles
 
 ''', epilog='''Column and row defaults (--pricecol, --newpricerow, etc.) should already work
