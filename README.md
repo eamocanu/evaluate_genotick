@@ -1,5 +1,11 @@
 # evaluate_genotick
-Generate machine learning metrics from Genotick outputs. For Python 3.6.
+Generate machine learning metrics from Genotick outputs. Tested on Python 3.6. Requires CSV output from latest Genotick on Github.
+
+Depends (run `pip install` or use Anaconda3 distro):
+* `pandas`
+* `numpy`
+* `scikit-learn`
+* `matplotlib`
 
 Drop files in a directory and run main.py:
 
