@@ -37,26 +37,37 @@ def get_predictions_from_file(fn, skip_reverse = False, col_prediction = 1, col_
                 csvw = csv.writer(dest_fw)
 
             if get_dataframe: 
-                if not name in output: output[name] = pandas.DataFrame(data=None, columns=['Prediction','Score'])
+                if not name in output: output[name] = []
 
             prediction = prediction_to_numeric(row[col_prediction])
-            if prediction == 0: score = 0
-            else:
-                col_vote = col_votedown if not score_by_positive_class and prediction < 0 else col_voteup
-                score_total = float(row[col_votedown]) + float(row[col_voteup])
-                score = float(row[col_vote]) / score_total
 
-            row = [
+            rowOut = [
                 row[col_date]
                 , prediction
-                , score
             ]
 
-            if save_output: csvw.writerow(row)
-            if get_dataframe: output[name] = output[name].append(pandas.DataFrame([row[1:]], index=[row[0]], columns=['Prediction','Score']))
+            if prediction == 0: 
+                rowOut += [0] if score_by_positive_class else [0,0]
+            else:
+                score_total = float(row[col_votedown]) + float(row[col_voteup])
+                if score_by_positive_class:
+                    rowOut += [float(row[col_voteup]) / score_total]
+                else:
+                    rowOut += [
+                        float(row[col_votedown]) / score_total
+                        , float(row[col_voteup]) / score_total
+                    ]
+
+            if save_output: csvw.writerow(rowOut)
+            if get_dataframe: output[name].append(rowOut)
 
     if save_output: close_file_dict(dest_files)
-    if get_dataframe: return output
+    if get_dataframe: 
+        for name in output:
+            columns = ['TimePoint', 'Prediction','Score'] if score_by_positive_class else ['TimePoint','Prediction','ScoreDown','ScoreUp']
+            output[name] = pandas.DataFrame(data=output[name], columns=columns)
+            output[name].set_index('TimePoint', inplace=True)
+        return output
 
 def prediction_to_numeric(prediction):
     if prediction.isdigit(): return prediction
@@ -74,12 +85,13 @@ def get_fn_pieces(fn):
     pieces = fn.split('_', 1)
     return pieces[0], pieces[1] if len(pieces) > 1 else None
 
-def read_predictions_from_dir(prediction_path, skip_reverse = False):
+def read_predictions_from_dir(prediction_path, skip_reverse = False, score_by_positive_class=True):
     output = {}
 
     for fn in os.listdir(prediction_path):
         if skip_reverse and fn.lower().startswith('reverse_'): continue
-        output[fn] = pandas.read_csv(os.path.join(truth_dir, fn), header=None, names=['TimePoint', 'Prediction', 'Score'], index_col=0)
+        names = ['TimePoint', 'Prediction', 'Score'] if score_by_positive_class else ['TimePoint', 'Prediction', 'ScoreDown', 'ScoreUp']
+        output[fn] = pandas.read_csv(os.path.join(prediction_path, fn), header=None, names=names, index_col=0)
 
     return output
 

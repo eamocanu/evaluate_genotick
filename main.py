@@ -1,13 +1,12 @@
 import argparse
 import os
-import data_to_ground as d2g
+import data_to_truth as d2t
 import predictions_to_pred as p2p
-import evaluate_pred_ground as epg
-import matplotlib.pyplot as plt
+import evaluate_pred_truth as ept
 
-def main(predict_dir, truth_dir \
-        , data_dir = None \
-        , predictions_file = None \
+def main(data_gen = None, predict_gen = None \
+        , data_out = None, predict_out = None \
+        , data_in = None, predict_in = None \
         , start_point = None \
         , end_point = None \
         # , truth_save_dir = None \
@@ -23,15 +22,46 @@ def main(predict_dir, truth_dir \
         , weight_up_col = 4 \
         , weight_down_col = 5 \
 ):
-    if not data_dir is None and os.path.isdir(data_dir): # process data
-        d2g.get_truth_from_data(data_dir = data_dir, skip_reverse = skip_reverse, price_col = price_col, new_offset = new_price_row, old_offset = old_price_row, save_dir = truth_dir, get_dataframe=False)
+    if not data_gen is None and predict_gen is None \
+        or not predict_gen is None and data_gen is None \
+    :
+        raise ValueError('Both --datagen and --predictgen must be specified')
+    elif not data_in is None and predict_in is None \
+        or not predict_in is None and data_in is None \
+    :
+        raise ValueError('Both --datain and --predictin must be specified')
+    elif data_in is None and predict_in is None and data_gen is None and predict_gen is None:
+        raise ValueError('Either --datagen and --predictgen, or --datain and --predictin, must be specified. See --help')
 
-    if not predictions_file is None and os.path.isfile(predictions_file): # process predictions
-        p2p.get_predictions_from_file(predictions_file, skip_reverse = skip_reverse, col_prediction = prediction_col, col_voteup = weight_up_col, col_votedown = weight_down_col, save_dir = predict_dir, get_dataframe = False)
+    if not data_gen is None and os.path.isdir(data_gen): # process data
+        print('Generating truth classes from {}'.format(data_gen))
+        truth = d2t.get_truth_from_data(data_dir = data_gen, skip_reverse = skip_reverse, price_col = price_col, new_offset = new_price_row, old_offset = old_price_row, save_dir = data_out, get_dataframe=True)
+    # elif not data_in is None and os.path.isdir(data_in):
+    #     print('Reading predicted classes from {}'.format(data_in))
+    #     truth = d2t.read_truth_from_dir(data_in, skip_reverse = skip_reverse)
 
-    truth_classes, predicted_classes, scores = epg.get_classes_scores_from_dir(predict_dir, truth_dir, start_point = start_point, end_point = end_point, skip_reverse = skip_reverse)
+    if not predict_gen is None and os.path.isfile(predict_gen): # process predictions
+        print('Generating predicted classes from {}'.format(predict_gen))
+        predict = p2p.get_predictions_from_file(predict_gen, skip_reverse = skip_reverse, col_prediction = prediction_col, col_voteup = weight_up_col, col_votedown = weight_down_col, save_dir = predict_out, get_dataframe=True, score_by_positive_class=False)
+    # elif not predict_in is None and os.path.isdir(predict_in):
+    #     print('Reading predicted classes from {}'.format(predict_in))
+    #     predict = p2p.read_predictions_from_dir(predict_in, skip_reverse = skip_reverse, score_by_positive_class=False)
 
-    epg.get_metric_plots(truth_classes, predicted_classes, scores, mode = [], output_file = output_files, output_live = not suppress_display)
+    # if truth is None:
+    #     raise ValueError('Missing truth classes: make sure --data_gen or --data_in is specified.')
+    # elif predict is None:
+    #     raise ValueError('Missing predicted classes: make sure --predict_gen or --predict_in is specified.')
+
+    print('Retrieving classes and scores')
+    if (not data_in is None or not data_out is None) and (not predict_in is None or not predict_out is None):
+        data_dir = data_in if not data_in is None else data_out
+        predict_dir = predict_in if not predict_in is None else predict_out
+        truth_classes, predicted_classes, scores, probas = ept.get_classes_scores_from_dir(predict_dir, data_dir, start_point = start_point, end_point = end_point, skip_reverse = skip_reverse, score_by_positive_class=False)
+    else: # do in memory, todo: very slow looping through pandas dataframe
+        truth_classes, predicted_classes, scores, probas = ept.get_classes_scores_from_df_dict(predict, truth, start_point = start_point, end_point = end_point, skip_reverse = skip_reverse, score_by_positive_class=False)
+
+    print('Drawing metrics')
+    ept.get_metric_plots(truth_classes, predicted_classes, scores, probas, mode = [], output_file = output_files, output_live = not suppress_display)
 
     print('Finished')
 
@@ -39,27 +69,37 @@ def get_args():
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description='''Generate machine learning metrics from Genotick predictions.
 You need a predictions_x.csv and the original data/ directory.
 
+--datagen and --predictgen, or --datain and --predictin, must
+be specified. --dataout and --predictout are optional.
+
+*gen commands generate readings from Genotick outputs and
+*in commands read already-generated readings saved from *out.
+
 Suggested use, first time (to generate market readings):
 
-    main.py "./predict" "./truth" --data "./data" 
-        --predictions "predictions_x.csv" --start 20170101 
-        --skipreverse --outputfiles
+  %s --datagen "./data" --predictgen "predictions_x.csv" 
+    --dataout "./truth" --predictout "./predict" 
+    --start 20170101 --skipreverse --outputfiles
 
 Suggested use, with already-generated market readings:
 
-    main.py "./predict" "./truth" --start 20170101 
-        --skipreverse --outputfiles
+  %s --datain "./truth" --predictin "./predict" 
+    --start 20170101 --skipreverse --outputfiles
 
-''', epilog='''Column and row defaults (--pricecol, --newpricerow, etc.) should already work
+''' % (os.path.basename(__file__), os.path.basename(__file__)), epilog='''Column and row defaults (--pricecol, --newpricerow, etc.) should already work
 for Genotick. Use these settings only if you have differently formatted CSV files.''')
-    parser.add_argument('predictdir', type=str
-        , help='Directory with predicted market readings. If --predictions is passed, generate and save the readings to this dir. Else, read the readings.')
-    parser.add_argument('truthdir', type=str
-        , help='Directory with actual market readings. If --data is passed, generate and save the readings. Else, read the readings.')
-    parser.add_argument('--data', '-d', type=str, default=None
-        , help='Data directory to generate market readings.')
-    parser.add_argument('--predictions', '-c', type=str, default=None
-        , help='File to generate predicted market readings.')
+    parser.add_argument('--datagen', '-dg', type=str, default=None
+        , help='Original data directory, to generate actual market readings.')
+    parser.add_argument('--predictgen', '-cg', type=str, default=None
+        , help='Original predictions file, to generate predicted readings.')
+    parser.add_argument('--dataout', '-do', type=str, default=None
+        , help='Output directory to save actual readings.')
+    parser.add_argument('--predictout', '-co', type=str, default=None
+        , help='Output directory to save predicted readings.')
+    parser.add_argument('--datain', '-di', type=str, default=None
+        , help='Directory to use already-generated actual readings.')
+    parser.add_argument('--predictin', '-ci', type=str, default=None
+        , help='Directory to use already-generated predicted readings. ')
     parser.add_argument('--start', '-s', type=int, default=None
         , help='Starting TimePoint, inclusive. default: earliest')
     parser.add_argument('--end', '-e', type=int, default=None
@@ -96,9 +136,9 @@ for Genotick. Use these settings only if you have differently formatted CSV file
 
 if __name__ == '__main__':
     args = get_args()
-    main(args.predictdir, args.truthdir \
-        , data_dir = args.data \
-        , predictions_file = args.predictions \
+    main(data_gen = args.datagen, predict_gen = args.predictgen \
+        , data_out = args.dataout, predict_out = args.predictout \
+        , data_in = args.datain, predict_in = args.predictin \
         , start_point = args.start \
         , end_point = args.end \
         # , truth_dir = args.readtruth \

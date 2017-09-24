@@ -3,48 +3,57 @@ Generate machine learning metrics from Genotick outputs. Tested on Python 3.6. R
 
 Depends (run `pip install` or use Anaconda3 distro):
 * `pandas`
-* `numpy`
-* `scikit-learn`
+* `scikitplot`
 * `matplotlib`
 
 Drop files in a directory and run main.py:
 
 ```
-usage: main.py [-h] [--data DATA] [--predictions PREDICTIONS] [--start START]
-               [--end END] [--skipreverse] [--mode MODE [MODE ...]]
-               [--suppressdisplay] [--outputfiles] [--pricecol PRICECOL]
+usage: main.py [-h] [--datagen DATAGEN] [--predictgen PREDICTGEN]
+               [--dataout DATAOUT] [--predictout PREDICTOUT] [--datain DATAIN]
+               [--predictin PREDICTIN] [--start START] [--end END]
+               [--skipreverse] [--mode MODE [MODE ...]] [--suppressdisplay]
+               [--outputfiles] [--pricecol PRICECOL]
                [--newpricerow NEWPRICEROW] [--oldpricerow OLDPRICEROW]
                [--predictioncol PREDICTIONCOL] [--weightupcol WEIGHTUPCOL]
                [--weightdowncol WEIGHTDOWNCOL]
-               predictdir truthdir
 
 Generate machine learning metrics from Genotick predictions.
 You need a predictions_x.csv and the original data/ directory.
 
+--datagen and --predictgen, or --datain and --predictin, must
+be specified. --dataout and --predictout are optional.
+
+*gen commands generate readings from Genotick outputs and
+*in commands read already-generated readings saved from *out.
+
 Suggested use, first time (to generate market readings):
 
-    main.py "./predict" "./truth" --data "./data"
-        --predictions "predictions_x.csv" --start 20170101
-        --skipreverse --outputfiles
+  main.py --datagen "./data" --predictgen "predictions_x.csv"
+    --dataout "./truth" --predictout "./predict"
+    --start 20170101 --skipreverse --outputfiles
 
 Suggested use, with already-generated market readings:
 
-    main.py "./predict" "./truth" --start 20170101
-        --skipreverse --outputfiles
-
-positional arguments:
-  predictdir            Directory with predicted market readings. If
-                        --predictions is passed, generate and save the
-                        readings to this dir. Else, read the readings.
-  truthdir              Directory with actual market readings. If --data is
-                        passed, generate and save the readings. Else, read the
-                        readings.
+  main.py --datain "./truth" --predictin "./predict"
+    --start 20170101 --skipreverse --outputfiles
 
 optional arguments:
   -h, --help            show this help message and exit
-  --data DATA, -d DATA  Data directory to generate market readings.
-  --predictions PREDICTIONS, -c PREDICTIONS
-                        File to generate predicted market readings.
+  --datagen DATAGEN, -dg DATAGEN
+                        Original data directory, to generate actual market
+                        readings.
+  --predictgen PREDICTGEN, -cg PREDICTGEN
+                        Original predictions file, to generate predicted
+                        readings.
+  --dataout DATAOUT, -do DATAOUT
+                        Output directory to save actual readings.
+  --predictout PREDICTOUT, -co PREDICTOUT
+                        Output directory to save predicted readings.
+  --datain DATAIN, -di DATAIN
+                        Directory to use already-generated actual readings.
+  --predictin PREDICTIN, -ci PREDICTIN
+                        Directory to use already-generated predicted readings.
   --start START, -s START
                         Starting TimePoint, inclusive. default: earliest
   --end END, -e END     Ending TimePoint, inclusive. default: latest
