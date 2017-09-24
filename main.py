@@ -23,10 +23,10 @@ def main(predict_dir, truth_dir \
         , weight_up_col = 4 \
         , weight_down_col = 5 \
 ):
-    if os.path.isdir(data_dir): # process data
+    if not data_dir is None and os.path.isdir(data_dir): # process data
         d2g.get_truth_from_data(data_dir = data_dir, skip_reverse = skip_reverse, price_col = price_col, new_offset = new_price_row, old_offset = old_price_row, save_dir = truth_dir, get_dataframe=False)
 
-    if os.path.isfile(predictions_file): # process predictions
+    if not predictions_file is None and os.path.isfile(predictions_file): # process predictions
         p2p.get_predictions_from_file(predictions_file, skip_reverse = skip_reverse, col_prediction = prediction_col, col_voteup = weight_up_col, col_votedown = weight_down_col, save_dir = predict_dir, get_dataframe = False)
 
     truth_classes, predicted_classes, scores = epg.get_classes_scores_from_dir(predict_dir, truth_dir, start_point = start_point, end_point = end_point, skip_reverse = skip_reverse)
