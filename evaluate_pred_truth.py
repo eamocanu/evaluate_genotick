@@ -19,11 +19,6 @@ def main(pred_dir, ground_dir, start_point = None, end_point = None, instruments
     get_metric_plots(ground_classes, pred_classes, scores, probas, output_file, output_live)
 
 def get_metric_plots(truth_classes, predicted_classes, scores, probas, mode=[], output_file = False, output_live = True, output_name=None):
-    # if len(mode) <= 0 or 'calibration' in mode:
-    #     cal = calibration_curve(truth_classes, scores, n_bins=bins)
-    #     plot_calibration(cal, predicted_classes, bins=bins, name='Genotick')
-    #     if output_file: plt.savefig('{}_calibration.png'.format(output_name if not output_name is None and not len(output_name) <= 0 else 'output'))
-
     filename_suffix = output_name if not output_name is None and not len(output_name) <= 0 else 'output'
 
     if len(mode) <= 0 or 'confusion' in mode or 'matrix' in mode:
@@ -41,6 +36,12 @@ def get_metric_plots(truth_classes, predicted_classes, scores, probas, mode=[], 
     if len(mode) <= 0 or 'precision-recall' in mode or 'precision' in mode or 'recall' in mode:
         skplt.metrics.plot_precision_recall_curve(truth_classes, probas)
         if output_file: plt.savefig('{}_precision-recall.png'.format(filename_suffix))
+
+    if len(mode) <= 0 or 'calibration' in mode:
+        #cal = calibration_curve(truth_classes, scores, n_bins=bins)
+        #plot_calibration(cal, predicted_classes, bins=bins, name='Genotick')
+        skplt.metrics.plot_calibration_curve(truth_classes, probas_list=[probas], clf_names=['Genotick'])
+        if output_file: plt.savefig('{}_calibration.png'.format(filename_suffix))
 
     # if len(mode) <= 0 or 'silhouette' in mode:
     #     skplt.metrics.plot_silhouette()
@@ -76,7 +77,7 @@ def get_classes_scores_from_df_dict(predict_dict, truth_dict, start_point = None
             try: truth_row = truth_dict[name].loc[index]
             except: continue
             truth_class = 1 if truth_row['Class'] == 0 else truth_row['Class']
-            
+
             truth_classes.append(truth_class)
             predict_classes.append(row['Prediction'])
             if score_by_positive_class:

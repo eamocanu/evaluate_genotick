@@ -33,14 +33,14 @@ def main(data_gen = None, predict_gen = None \
     elif data_in is None and predict_in is None and data_gen is None and predict_gen is None:
         raise ValueError('Either --datagen and --predictgen, or --datain and --predictin, must be specified. See --help')
 
-    if not data_gen is None and os.path.isdir(data_gen): # process data
+    if not data_gen is None: # process data
         print('Generating truth classes from {}'.format(data_gen))
         truth = d2t.get_truth_from_data(data_dir = data_gen, skip_reverse = skip_reverse, price_col = price_col, new_offset = new_price_row, old_offset = old_price_row, save_dir = data_out, get_dataframe=True)
     # elif not data_in is None and os.path.isdir(data_in):
     #     print('Reading predicted classes from {}'.format(data_in))
     #     truth = d2t.read_truth_from_dir(data_in, skip_reverse = skip_reverse)
 
-    if not predict_gen is None and os.path.isfile(predict_gen): # process predictions
+    if not predict_gen is None: # process predictions
         print('Generating predicted classes from {}'.format(predict_gen))
         predict = p2p.get_predictions_from_file(predict_gen, skip_reverse = skip_reverse, col_prediction = prediction_col, col_voteup = weight_up_col, col_votedown = weight_down_col, save_dir = predict_out, get_dataframe=True, score_by_positive_class=False)
     # elif not predict_in is None and os.path.isdir(predict_in):
