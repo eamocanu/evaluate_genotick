@@ -1,6 +1,10 @@
 # evaluate_genotick
 Generate machine learning metrics from Genotick outputs. Tested on Python 3.6. Requires CSV output from latest Genotick on Github.
 
+Outputs confusion matrix, ROC curve, precision-recall curve, and calibration (reliability) curve.
+
+<img src="datasets/stock/stock_confusion.png" width="256"> <img src="datasets/stock/stock_roc.png" width="256"> <img src="datasets/stock/stock_precision-recall.png" width="256"> <img src="datasets/stock/stock_calibration.png" width="256">
+
 Depends (run `pip install` or use Anaconda3 distro):
 * `pandas`
 * `scikitplot`
