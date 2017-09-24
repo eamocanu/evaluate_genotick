@@ -1,0 +1,30 @@
+﻿# Used defaults for most settings.
+dataDirectory	data
+#startTimePoint	20000103
+#endTimePoint	20170428
+#populationDAO	population
+performTraining	true
+
+populationDesiredSize	1000
+processorInstructionLimit	256
+maximumDeathByAge	0.01
+maximumDeathByWeight	0.01
+probabilityOfDeathByAge	0.5
+probabilityOfDeathByWeight	0.5
+inheritedChildWeight	0
+inheritedChildWeightMode ANCESTORS_LOG
+dataMaximumOffset	256
+protectRobotsUntilOutcomes	100
+newInstructionProbability	0.01
+instructionMutationProbability	0.01
+skipInstructionProbability	0.01
+minimumOutcomesToAllowBreeding	50
+minimumOutcomesBetweenBreeding	50
+killNonPredictingRobots	true
+randomRobotsAtEachUpdate	0.02
+protectBestRobots	0.02
+requireSymmetricalRobots	true
+resultThreshold	1
+weightMode	WIN_COUNT
+weightExponent	2.0
+chartMode	JFREECHART_SAVE
