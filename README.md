@@ -1,14 +1,30 @@
 # evaluate_genotick
-Generate machine learning metrics from Genotick outputs. Tested on Python 3.6. Requires CSV output from latest Genotick on Github.
+Generate machine learning metrics from Genotick outputs. Tested on Python 3.6. 
 
-Outputs confusion matrix, ROC curve, precision-recall curve, and calibration (reliability) curve.
+Requires CSV output from latest Genotick source on Github.
+
+# Output
+
+Outputs the following metrics:
+
+* Accuracy and error scores
+* Classification metrics: Precision, recall, F1-score, and support
+* Confusion matrix (true vs false predictions)
+* ROC curve (plot true vs false predictions)
+* Precision-recall curve
+* Calibration curve (plot reliability of prediction confidence)
 
 <img src="datasets/stock/stock_confusion.png" width="256"> <img src="datasets/stock/stock_roc.png" width="256"> <img src="datasets/stock/stock_precision-recall.png" width="256"> <img src="datasets/stock/stock_calibration.png" width="256">
 
+# Install
+
 Depends (run `pip install` or use Anaconda3 distro):
 * `pandas`
+* `scikit-learn`
 * `scikitplot`
 * `matplotlib`
+
+# Usage
 
 Drop files in a directory and run main.py:
 
@@ -16,8 +32,8 @@ Drop files in a directory and run main.py:
 usage: main.py [-h] [--datagen DATAGEN] [--predictgen PREDICTGEN]
                [--dataout DATAOUT] [--predictout PREDICTOUT] [--datain DATAIN]
                [--predictin PREDICTIN] [--start START] [--end END]
-               [--skipreverse] [--mode MODE [MODE ...]] [--suppressdisplay]
-               [--outputfiles] [--pricecol PRICECOL]
+               [--skipreverse] [--mode MODE [MODE ...]] [--donotdisplay]
+               [--outputfiles [OUTPUTFILES]] [--pricecol PRICECOL]
                [--newpricerow NEWPRICEROW] [--oldpricerow OLDPRICEROW]
                [--predictioncol PREDICTIONCOL] [--weightupcol WEIGHTUPCOL]
                [--weightdowncol WEIGHTDOWNCOL]
@@ -64,10 +80,12 @@ optional arguments:
   --skipreverse, -k     Skip reverse data.
   --mode MODE [MODE ...], -m MODE [MODE ...]
                         List of metrics to process, space-separated. choices:
-                        confusion, roc. default: all
-  --suppressdisplay, -b
-                        Do not display evaluation metrics upon completion
-  --outputfiles, -o     Output evaluation metrics as image files
+                        accuracy, confusion, roc, precision-recall,
+                        calibration. default: all
+  --donotdisplay, -b    Do not display evaluation metrics upon completion
+  --outputfiles [OUTPUTFILES], -o [OUTPUTFILES]
+                        Output evaluation metrics as image files. Optionally,
+                        specify a filename prefix (default: "output_")
   --pricecol PRICECOL, -p PRICECOL
                         In data files, price column index to determine market
                         direction. Index does not include TimePoint column
