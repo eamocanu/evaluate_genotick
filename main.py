@@ -118,12 +118,12 @@ for Genotick. Use these settings only if you have differently formatted CSV file
         , help='Do not display evaluation metrics upon completion')
     parser.add_argument('--outputfiles', '-o', action='store', nargs='?', const='output', default=False
         , help='Output evaluation metrics as image files. Optionally, specify a filename prefix (default: "output_")')
-    parser.add_argument('--pricecol', '-p', type=int, default=3
-        , help='In data files, price column index to determine market direction. Index does not include TimePoint column (i.e., open = 0). default: 3 (close)')
-    parser.add_argument('--newpricerow', '-n', type=int, default=1
-        , help='In data files, new price row to determine market direction, relative to TimePoint. default: 1 (next future TimePoint)')
-    parser.add_argument('--oldpricerow', '-l', type=int, default=0
-        , help='In data files, old price row to determine market direction, relative to TimePoint. default: 0 (current TimePoint)')
+    parser.add_argument('--pricecol', '-p', type=int, default=0
+        , help='In data files, price column index to determine market direction. Index does not include TimePoint column (i.e., open = 0). default: 0 (open)')
+    parser.add_argument('--newpricerow', '-n', type=int, default=2
+        , help='In data files, new price row to determine market direction, relative to TimePoint. default: 2 (two TimePoints in future)')
+    parser.add_argument('--oldpricerow', '-l', type=int, default=1
+        , help='In data files, old price row to determine market direction, relative to TimePoint. default: 1 (next future TimePoint)')
     parser.add_argument('--predictioncol', '-r', type=int, default=1
         , help='In prediction file, prediction column index. Index does not include TimePoint column. default: 1')
     parser.add_argument('--weightupcol', '-u', type=int, default=4
