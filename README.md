@@ -8,7 +8,7 @@ Requires CSV output from latest Genotick source on Github.
 See [datasets](datasets) for examples. Outputs the following metrics:
 
 * Accuracy and error scores
-* Classification metrics: [Precision, recall, F1-score, and support](https://chrisalbon.com/machine-learning/precision_recall_and_F1_scores.html)
+* [Precision, recall, F1-score, and support](https://chrisalbon.com/machine-learning/precision_recall_and_F1_scores.html)
 * [Confusion matrix](http://www.dataschool.io/simple-guide-to-confusion-matrix-terminology/) (true vs false predictions)
 * [ROC curve](https://stats.stackexchange.com/questions/132777/what-does-auc-stand-for-and-what-is-it) [[2](http://www.dataschool.io/roc-curves-and-auc-explained/)] (plot true vs false predictions)
 * [Precision-recall curve](https://classeval.wordpress.com/introduction/introduction-to-the-precision-recall-plot/) [[2](https://stats.stackexchange.com/questions/7207/roc-vs-precision-and-recall-curves)]
