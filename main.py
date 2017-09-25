@@ -61,7 +61,7 @@ def main(data_gen = None, predict_gen = None \
         truth_classes, predicted_classes, scores, probas = ept.get_classes_scores_from_df_dict(predict, truth, start_point = start_point, end_point = end_point, skip_reverse = skip_reverse, score_by_positive_class=False)
 
     print('Drawing metrics')
-    ept.get_metric_plots(truth_classes, predicted_classes, scores, probas, mode = [], output_file = output_files, output_live = not suppress_display)
+    ept.get_metric_plots(truth_classes, predicted_classes, scores, probas, mode = [], output_file = bool(output_files), output_live = not suppress_display, output_name=output_files if isinstance(output_files, str) else None)
 
     print('Finished')
 
@@ -113,11 +113,11 @@ for Genotick. Use these settings only if you have differently formatted CSV file
     parser.add_argument('--skipreverse', '-k', action='store_true', default=False
         , help='Skip reverse data.')
     parser.add_argument('--mode', '-m', type=str, nargs='+', default=[]
-        , help='List of metrics to process, space-separated. choices: confusion, roc. default: all')
-    parser.add_argument('--suppressdisplay', '-b', action='store_true', default=False
+        , help='List of metrics to process, space-separated. choices: accuracy, confusion, roc, precision-recall, calibration. default: all')
+    parser.add_argument('--donotdisplay', '-b', action='store_true', default=False
         , help='Do not display evaluation metrics upon completion')
-    parser.add_argument('--outputfiles', '-o', action='store_true', default=False
-        , help='Output evaluation metrics as image files')
+    parser.add_argument('--outputfiles', '-o', action='store', nargs='?', const='output', default=False
+        , help='Output evaluation metrics as image files. Optionally, specify a filename prefix (default: "output_")')
     parser.add_argument('--pricecol', '-p', type=int, default=3
         , help='In data files, price column index to determine market direction. Index does not include TimePoint column (i.e., open = 0). default: 3 (close)')
     parser.add_argument('--newpricerow', '-n', type=int, default=1
@@ -146,7 +146,7 @@ if __name__ == '__main__':
         # , predicted_save_dir = args.savepredicted \
         , skip_reverse = args.skipreverse \
         , mode = args.mode \
-        , suppress_display = args.suppressdisplay \
+        , suppress_display = args.donotdisplay \
         , output_files = args.outputfiles \
         # output_name = None
         , price_col = args.pricecol \

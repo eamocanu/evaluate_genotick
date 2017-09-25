@@ -4,6 +4,7 @@ import argparse
 import itertools
 import matplotlib.pyplot as plt
 import scikitplot as skplt
+import sklearn.metrics as skm
 
 # condition = predicted
 # data/class = actual (ground)
@@ -20,6 +21,15 @@ def main(pred_dir, ground_dir, start_point = None, end_point = None, instruments
 
 def get_metric_plots(truth_classes, predicted_classes, scores, probas, mode=[], output_file = False, output_live = True, output_name=None):
     filename_suffix = output_name if not output_name is None and not len(output_name) <= 0 else 'output'
+
+    if len(mode) <= 0 or 'accuracy' in mode:
+        report = skm.classification_report(truth_classes, predicted_classes)
+        accuracy_score = skm.accuracy_score(truth_classes, predicted_classes)
+        report += '\nAccuracy score: %.2f\nError score: %.2f' % (accuracy_score, 1-accuracy_score) # error = inverse of accuracy
+        print(report)
+        if output_file: 
+            with open('{}_accuracy.txt'.format(filename_suffix), 'w') as f:
+                f.write(report)
 
     if len(mode) <= 0 or 'confusion' in mode or 'matrix' in mode:
         # matrix = get_confusion_matrix(truth_classes, predicted_classes, scores)
