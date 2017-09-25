@@ -85,19 +85,19 @@ optional arguments:
   --donotdisplay, -b    Do not display evaluation metrics upon completion
   --outputfiles [OUTPUTFILES], -o [OUTPUTFILES]
                         Output evaluation metrics as image files. Optionally,
-                        specify a filename prefix (default: "output_")
+                        specify a filename prefix (default: "output")
   --pricecol PRICECOL, -p PRICECOL
                         In data files, price column index to determine market
                         direction. Index does not include TimePoint column
-                        (i.e., open = 0). default: 3 (close)
+                        (i.e., open = 0). default: 0 (open)
   --newpricerow NEWPRICEROW, -n NEWPRICEROW
                         In data files, new price row to determine market
-                        direction, relative to TimePoint. default: 1 (next
-                        future TimePoint)
+                        direction, relative to TimePoint. default: 2 (next
+                        TimePoint in future)
   --oldpricerow OLDPRICEROW, -l OLDPRICEROW
                         In data files, old price row to determine market
-                        direction, relative to TimePoint. default: 0 (current
-                        TimePoint)
+                        direction, relative to TimePoint. default: 1 (next
+                        future TimePoint)
   --predictioncol PREDICTIONCOL, -r PREDICTIONCOL
                         In prediction file, prediction column index. Index
                         does not include TimePoint column. default: 1
