@@ -3,7 +3,7 @@ Generate machine learning metrics from Genotick outputs. Tested on Python 3.6 an
 
 [Genotick](https://genotick.com/) ([source](https://gitlab.com/lukasz.wojtow/genotick)) is a trading algorithm that outputs trading signals per bar of stock data: 0 for "Hold", 1 for "Buy", -1 for "Sell". The output may be evaluated as a machine learning classification problem.
 
-The author [publicizes Genotick as a profitable system](https://genotick.com/results/), and even addresses [whether the system is better than random](https://genotick.com/static/download/IsGenotickRandom.pdf). However, when comparing the trading signals to the actual direction of the next price period, the classification metrics suggest that the system is no better than random (as of September 2017.)
+The author [publicizes Genotick as a profitable system](https://genotick.com/results/), and even addresses [whether the system is better than random](https://genotick.com/static/download/IsGenotickRandom.pdf). However, when comparing the trading signals to the actual direction of the next price period, the classification metrics suggest that the system is not better than random (between 2015-2017.)
 
 Anecdotally, Genotick appeared to make most of its gains between 2009-2012, consistent with the market's recovery from the 2008 housing crash. Since then, as the market rocks up and down, the trading signals appear to be similarly rocky. The author's cited gains may include the 2009-2012 period.
 
@@ -11,7 +11,7 @@ I wrote an article about [analyzing Genotick's results in a Forex backtest](http
 
 ## Results
 
-The below charts show classification metrics for [datasets/stock](datasets/stock), training between 2000-2015 and evaluating between 2016-2017. I outputted the following metrics:
+The below charts show classification metrics for [datasets/stock](datasets/stock), training between 2000-2015 and evaluating between 2015-2017. I outputted the following metrics:
 
 * Accuracy and error scores
 * [Precision, recall, F1-score, and support](https://chrisalbon.com/machine-learning/precision_recall_and_F1_scores.html)
