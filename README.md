@@ -1,4 +1,4 @@
- evaluate_genotick
+# evaluate_genotick
 Generate machine learning metrics from Genotick outputs. Tested on Python 3.6 and [alphatica/genotick@`0f0cc95`](https://github.com/alphatica/genotick/commit/0f0cc956508a43d8743e89d43ac1fcfb9dc8493b)
 
 [Genotick](https://genotick.com/) ([source](https://gitlab.com/lukasz.wojtow/genotick)) is a trading algorithm that outputs trading signals per bar of stock data: 0 for "Hold", 1 for "Buy", -1 for "Sell". The output may be evaluated as a machine learning classification problem.
