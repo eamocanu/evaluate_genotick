@@ -1,11 +1,17 @@
-# evaluate_genotick
-Generate machine learning metrics from Genotick outputs. Tested on Python 3.6. 
+ evaluate_genotick
+Generate machine learning metrics from Genotick outputs. Tested on Python 3.6 and [alphatica/genotick@`0f0cc95`](https://github.com/alphatica/genotick/commit/0f0cc956508a43d8743e89d43ac1fcfb9dc8493b)
 
-Requires CSV output from latest Genotick source on Github.
+[Genotick](https://genotick.com/) ([source](https://gitlab.com/lukasz.wojtow/genotick)) is a trading algorithm that outputs trading signals per bar of stock data: 0 for "Hold", 1 for "Buy", -1 for "Sell". The output may be evaluated as a machine learning classification problem.
 
-# Output
+The author [publicizes Genotick as a profitable system](https://genotick.com/results/), and even addresses [whether the system is better than random](https://genotick.com/static/download/IsGenotickRandom.pdf). However, when comparing the trading signals to the actual direction of the next price period, the classification metrics suggest that the system is no better than random (as of September 2017.)
 
-See [datasets](datasets) for examples. Outputs the following metrics:
+Anecdotally, Genotick appeared to make most of its gains between 2009-2012, consistent with the market's recovery from the 2008 housing crash. Since then, as the market rocks up and down, the trading signals appear to be similarly rocky. The author's cited gains may include the 2009-2012 period.
+
+I wrote an article about [analyzing Genotick's results in a Forex backtest](https://medium.com/@mazmazz/predicting-the-markets-with-genotick-and-evaluating-the-results-fe9330a01f80). The below results concern stock market trades.
+
+## Results
+
+The below charts show classification metrics for [datasets/stock](datasets/stock), training between 2000-2015 and evaluating between 2016-2017. I outputted the following metrics:
 
 * Accuracy and error scores
 * [Precision, recall, F1-score, and support](https://chrisalbon.com/machine-learning/precision_recall_and_F1_scores.html)
@@ -14,9 +20,25 @@ See [datasets](datasets) for examples. Outputs the following metrics:
 * [Precision-recall curve](https://classeval.wordpress.com/introduction/introduction-to-the-precision-recall-plot/) [[2](https://stats.stackexchange.com/questions/7207/roc-vs-precision-and-recall-curves)]
 * [Calibration curve](http://scikit-learn.org/stable/modules/calibration.html) (plot reliability of prediction confidence)
 
+The results suggest a slight negative correlation between the trading signal and actual price direction, but it's pretty close to random.
+
+I use a calibration plot to evaluate whether the system has a reliable confidence level for the trading signal, which is aggregated from a pool of "up" vs. "down" votes per signal. The plot suggests that this vote ratio has no utility as a confidence level.
+
 <img src="datasets/stock/stock_confusion.png" width="256"> <img src="datasets/stock/stock_roc.png" width="256"> <img src="datasets/stock/stock_precision-recall.png" width="256"> <img src="datasets/stock/stock_calibration.png" width="256">
 
-# Install
+```
+             precision    recall  f1-score   support
+
+       -1.0       0.48      0.49      0.49       280
+        1.0       0.50      0.49      0.50       291
+
+avg / total       0.49      0.49      0.49       571
+
+Accuracy score: 0.49
+Error score: 0.51
+```
+
+## Install
 
 Depends (run `pip install` or use Anaconda3 distro):
 * `pandas`
@@ -24,7 +46,7 @@ Depends (run `pip install` or use Anaconda3 distro):
 * `scikitplot`
 * `matplotlib`
 
-# Usage
+## Usage
 
 Drop files in a directory and run main.py:
 
